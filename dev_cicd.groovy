@@ -38,8 +38,8 @@ def uploadSpec = """{
 server.upload(uploadSpec)
 }
 stage ('Final deploy'){
-echo "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}"+${prop.DEST_DEPLOY_LOC}"
-sh "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}"+${prop.DEST_DEPLOY_LOC}"
+echo "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}+${prop.DEST_DEPLOY_LOC}"
+sh "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}+${prop.DEST_DEPLOY_LOC}"
 }
 stage('success email'){
     emailext body: 'Build is successful', subject: 'email notification', to: 'Jayanthi.Ravinathan@mindtree.com'
