@@ -1,4 +1,4 @@
-def execute(){
+def execute(prop){
 try{
 def pom    
 stage('checkout')
@@ -9,24 +9,19 @@ echo "${prop.GIT_URL}"
 def giturl=prop.GIT_URL
 echo "giturl=${giturl}"
 git "${giturl}"
-pom=readMavenPom  file: 'pom.xml'
+pom=readMavenPom  file: prop.POM_FILE
 }
 
 stage ('build'){
 
-def buildcmd="mvn clean install -Dv=${BUILD_NUMBER}"
-echo "${buildcmd}"
-sh "${buildcmd}"
+echo "${prop.MAVEN_CMD}"
+sh "${prop.MAVEN_CMD}"
 
 }
 
 stage('code analysis'){
-    echo "${prop}"
-    def mvncmd=prop.MAVEN_SONAR_CMD
-    def sonarurl=prop.SONAR_URL
-    def url=mvncmd+sonarurl
-    echo "${url}"
-    sh "${url}"
+    echo "${prop.MAVEN_SONAR_CMD}+${prop.SONAR_URL}"
+    sh "${prop.MAVEN_SONAR_CMD}+${prop.SONAR_URL}"
 }
 stage('Artifactory upload')
 {
@@ -35,7 +30,7 @@ def uploadSpec = """{
  	
 "files":[
 {
-"pattern":"target/*.war",
+"pattern":"${prop.WAR_PATTERN}",
 "target":"hello/${pom.artifactId}/${pom.version}.${BUILD_NUMBER}/"
 }
 ]
@@ -43,19 +38,16 @@ def uploadSpec = """{
 server.upload(uploadSpec)
 }
 stage ('Final deploy'){
-def src=prop.SRC_DEPLOY_LOC
-def dest=prop.DEST_DEPLOY_LOC
-def deployCmd="scp "+"${src}"+" "+"${dest}"
-echo "${deployCmd}"
-sh "${deployCmd}"
+echo "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}"+${prop.DEST_DEPLOY_LOC}"
+sh "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}"+${prop.DEST_DEPLOY_LOC}"
 }
-stage('email'){
-    emailext body: 'Build is successful', subject: 'email notification', to: 'jayanthikr91@gmail.com'
+stage('success email'){
+    emailext body: 'Build is successful', subject: 'email notification', to: 'Jayanthi.Ravinathan@mindtree.com'
   }
   }
   catch(Exception e){
-  stage('email'){
-    emailext body: 'Build is unsuccessful', subject: 'email notification', to: 'jayanthikr91@gmail.com'
+  stage('failure email'){
+    emailext body: 'Build is unsuccessful', subject: 'email notification', to: 'Jayanthi.Ravinathan@mindtree.com'
   }
   }
 
