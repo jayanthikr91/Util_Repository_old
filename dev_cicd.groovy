@@ -34,7 +34,7 @@ def uploadSpec = """{
 "files":[
 {
 "pattern":"target/*.war",
-"target":"hello/"
+"target":"hello/${artifactId}/${version}.${buildNo}/"
 }
 ]
 }"""
@@ -59,3 +59,4 @@ stage('email'){
 
 
 }
+return this
