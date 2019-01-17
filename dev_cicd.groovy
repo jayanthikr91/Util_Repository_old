@@ -38,7 +38,7 @@ server.upload(uploadSpec)
 }
 stage ('Final deploy'){
 echo "${prop.SECURE_COPY_CMD}+${prop.SRC_DEPLOY_LOC}+${prop.DEST_DEPLOY_LOC}"
-sh prop.SECURE_COPY_CMD+prop.SRC_DEPLOY_LOC+prop.DEST_DEPLOY_LOC
+sh prop.SECURE_COPY_CMD+prop.SRC_DEPLOY_LOC+" "+prop.DEST_DEPLOY_LOC
 }
 stage('success email'){
     emailext body: '${DEFAULT_CONTENT}', subject: '${DEFAULT_SUBJECT}', to: prop.RECEPIENT_MAIL_ID
