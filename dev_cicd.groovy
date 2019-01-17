@@ -1,13 +1,15 @@
 def execute(){
 try{
+def pom    
 stage('checkout')
 
 {
-echo "${prop}"
+echo "in checkout"
+echo "${prop.GIT_URL}"
 def giturl=prop.GIT_URL
 echo "giturl=${giturl}"
 git "${giturl}"
-
+pom=readMavenPom  file: 'pom.xml'
 }
 
 stage ('build'){
@@ -34,7 +36,7 @@ def uploadSpec = """{
 "files":[
 {
 "pattern":"target/*.war",
-"target":"hello/${artifactId}/${version}.${buildNo}/"
+"target":"hello/${pom.artifactId}/${pom.version}.${BUILD_NUMBER}/"
 }
 ]
 }"""
